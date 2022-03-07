@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, render_template
 
 app = Flask(__name__)
 
@@ -22,8 +22,17 @@ def promote():
 
 @app.route('/image_mars')
 def image():
-    return f'''<h1>Жди нас, Марс!</h1></br><img src="{url_for('static', filename='img/mars.jpg')}" 
-           alt="здесь должна была быть картинка, но не нашлась">'''
+    return render_template("image_mars.html", src=url_for('static', filename='img/mars.jpg'))
+    # return f'''<h1>Жди нас, Марс!</h1></br><img src="{url_for('static', filename='img/mars.jpg')}"
+    #        alt="здесь должна была быть картинка, но не нашлась">'''
+
+
+@app.route('/promotion_image')
+def promotion():
+    param = dict()
+    param['css'] = url_for('static', filename='css/style.css')
+    param['src'] = url_for('static', filename='img/mars.jpg')
+    return render_template("promotion.html", **param)
 
 
 if __name__ == '__main__':
