@@ -1,5 +1,7 @@
 from flask import Flask, url_for, request, render_template
 
+from data import db_session
+
 app = Flask(__name__)
 
 
@@ -49,5 +51,10 @@ def selection():
 
 # css {url_for('static', filename='css/style.css')}
 
-if __name__ == '__main__':
+def main():
+    db_session.global_init("db/blogs.db")  # запускаем базу данных (грубо говоря)
     app.run(port=8080, host='127.0.0.1')
+
+
+if __name__ == '__main__':
+    main()
