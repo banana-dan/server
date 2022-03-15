@@ -1,12 +1,16 @@
 # этот файл всего лишь создает несколько пользователей
+from datetime import datetime
+
 from flask import Flask, url_for, request, render_template
 
 from data import db_session
+from data.jobs import Jobs
 from data.users import User
 
 app = Flask(__name__)
 db_session.global_init("db/blogs.db")
 session = db_session.create_session()
+
 
 def create_4users():
     # создаем капитана
@@ -35,9 +39,21 @@ def create_4users():
     session.commit()
 
 
+def create_first_task():
+    task = Jobs()
+    task.team_leader = 1
+    task.job = "deployment of residential modules 1 and 2"
+
+    task.work_size = 15
+    task.collaborators = '2, 3'
+    task.start_date = datetime.now()
+    task.is_finished = False
+    session.commit()
+
+
 def main():
-      # запускаем базу данных (грубо говоря)
-    create_4users()
+    # запускаем базу данных (грубо говоря)
+    create_first_task()
 
 
 if __name__ == '__main__':
