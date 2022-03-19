@@ -8,6 +8,7 @@ from data.jobs import Jobs
 from data.users import User
 
 app = Flask(__name__)
+# запускаем базу данных (грубо говоря)
 db_session.global_init("db/blogs.db")
 session = db_session.create_session()
 
@@ -52,8 +53,8 @@ def create_first_task():
 
 
 def main():
-    # запускаем базу данных (грубо говоря)
-    create_first_task()
+    # create_first_task()
+    create_4users()
 
 
 if __name__ == '__main__':
