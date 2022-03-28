@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if list == "ol" %}
+<div>
+    <ol type="1">
+        {% for item in data %}
+        <li>{{item}}</li>
+        {% endfor %}
+    </ol>
+</div>
+{% elif list == "ul"%}
+<div>
+    <ul type="disc">
+        {% for item in data %}
+        <li>{{item}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<h4>!!!Неверно введен параметр!!!</h4>
+{% endif %}
+{% endblock %}

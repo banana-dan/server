@@ -104,7 +104,27 @@ def training(prof):
                            medicine_src=url_for('static', filename='img/medicine.png'),
                            default_src=url_for('static', filename="img/base.png"))
 
-
+@app.route("/list_prof/<list>")
+def list_prof(list):
+    data = [
+        "инженер-исследователь",
+        "пилот",
+        "строитель",
+        "экзобиолог",
+        "врач",
+        "инженер по терраформированию",
+        "климатолог",
+        "специалист по радиационной защите",
+        "астрогеолог",
+        "гляциолог",
+        "инженер жизнеобеспечивания",
+        "метеоролог",
+        "оператор марсохода",
+        "киберинженер",
+        "штурман",
+        "пилот дронов"
+    ]
+    return render_template("list_prof.html", list=list, data=data)
 # css {url_for('static', filename='css/style.css')}
 
 
