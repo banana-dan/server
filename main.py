@@ -96,7 +96,17 @@ def selection():
     pass
 
 
+@app.route('/training/<prof>')
+def training(prof):
+    return render_template("training.html", prof=prof,
+                           science_src=url_for('static', filename='img/nauchpop.png'),
+                           it_src=url_for('static', filename='img/it.png'),
+                           medicine_src=url_for('static', filename='img/medicine.png'),
+                           default_src=url_for('static', filename="img/base.png"))
+
+
 # css {url_for('static', filename='css/style.css')}
+
 
 def main():
     # db_session.global_init("db/blogs.db")  # запускаем базу данных (грубо говоря)

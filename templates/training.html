@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if prof == "врач" or prof == "доктор" %}
+        <div>
+            <h4>Медицинский блок</h4>
+            <img src="{{medicine_src}}">
+        </div>
+    {% elif "инженер" in prof or "строитель" in prof%}
+        <div>
+            <h4>Инженерный блок</h4>
+            <img src="{{it_src}}">
+        </div>
+    {% elif "эксперт" in prof or "исследователь" in prof%}
+        <div>
+            <h4>Научный комплекс</h4>
+            <img src="{{science_src}}">
+        </div>
+    {% else %}
+        <h4>вашей профессии нет в списке</h4>
+        <img src="{{default_src}}">
+    {% endif %}
+{% endblock %}
