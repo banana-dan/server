@@ -1,12 +1,13 @@
 from datetime import datetime
 
 import sqlalchemy
+from flask_login import UserMixin
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     # id (Integer, primary_key, autoincrement)
@@ -30,3 +31,6 @@ class User(SqlAlchemyBase):
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime)
+
+    def check_password(self, password):
+        return self.hashed_password == password

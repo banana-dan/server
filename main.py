@@ -2,55 +2,52 @@
 from datetime import datetime
 
 from flask import Flask, url_for, request, render_template
+from werkzeug.utils import redirect
 
+from data.loginform import LoginForm
 from data import db_session
 from data.jobs import Jobs
 from data.users import User
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 # запускаем базу данных (грубо говоря)
 db_session.global_init("db/blogs.db")
 session = db_session.create_session()
 
-
-def create_4users():
-    # создаем капитана
-    capitan = User()
-    capitan.surname = "Scott"
-    capitan.name = "Ridley"
-    capitan.age = 21
-    capitan.position = "captain"
-    capitan.speciality = "research engineer"
-    capitan.address = "module_1"
-    capitan.email = "scott_chief@mars.org"
-    capitan.hashed_password = "cap"
-    session.add(capitan)
-
-    for count in range(3):
-        user = User()
-        user.surname = "user" + str(count)
-        user.name = "name" + str(count)
-        user.age = 20 * count
-        user.position = "position" + str(count)
-        user.speciality = "speciality" + str(count)
-        user.address = "module_" + str(count)
-        user.email = "email" + str(count)
-        user.hashed_password = "cap" + str(count)
-        session.add(user)
-    session.commit()
+# запускаем flask_login
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
-def create_first_task():
-    task = Jobs()
-    task.team_leader = 1
-    task.job = "deployment of residential modules 1 and 2"
+# функия, нужная для flask_login
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
-    task.work_size = 15
-    task.collaborators = '2, 3'
-    task.start_date = datetime.now()
-    task.is_finished = False
-    session.commit()
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/index/lololololo")
+        return render_template('authorisation.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('authorisation.html', title='Авторизация', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 @app.route('/')
 def name():
@@ -67,13 +64,6 @@ def promote():
     return "Человечество вырастает из детства.</br>Человечеству мала одна планета." \
            "</br>Мы сделаем обитаемыми безжизненные пока планеты.</br>И начнем с Марса!" \
            "</br>Присоединяйся!"
-
-
-# @app.route('/promotion_image')
-# def promote():
-#     return "Человечество вырастает из детства.</br>Человечеству мала одна планета." \
-#            "</br>Мы сделаем обитаемыми безжизненные пока планеты.</br>И начнем с Марса!" \
-#            "</br>Присоединяйся!"
 
 
 @app.route('/image_mars')
@@ -104,6 +94,7 @@ def training(prof):
                            medicine_src=url_for('static', filename='img/medicine.png'),
                            default_src=url_for('static', filename="img/base.png"))
 
+
 @app.route("/list_prof/<list>")
 def list_prof(list):
     data = [
@@ -125,6 +116,8 @@ def list_prof(list):
         "пилот дронов"
     ]
     return render_template("list_prof.html", list=list, data=data)
+
+
 # css {url_for('static', filename='css/style.css')}
 
 
